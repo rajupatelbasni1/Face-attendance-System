@@ -38,6 +38,3 @@
   python recognize_insight.py
   ```
 # Face-attendance-System
-# Face-attendance-System
-# Face-attendance-System
-# Face-attendance-System-Dyp-Dpgu
