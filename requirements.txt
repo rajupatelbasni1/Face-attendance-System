@@ -1,0 +1,6 @@
+django>=4.2
+opencv-python
+insightface
+onnxruntime
+numpy
+pillow

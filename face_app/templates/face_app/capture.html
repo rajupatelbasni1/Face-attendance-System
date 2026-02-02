@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Face</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #c4d1d5;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        #video {
+            width: 480px;
+            height: 360px;
+            border-radius: 10px;
+            border: 3px solid #00ff88;
+            background: rgb(27, 18, 201);
+        }
+        .input-box {
+            padding: 10px;
+            width: 300px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 12px 35px;
+            border: none;
+            background: #00ff88;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            color: black;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #00cc66;
+        }
+
+        .btn-secondary {
+            margin-top: 20px;
+            padding: 12px 35px;
+            border: 2px solid #00ff88;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #00ff88;
+            font-weight: bold;
+        }
+        .btn-secondary:hover {
+            background: #00ff88;
+            color: #000;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Register Student Face</h1>
+
+    <video id="video" autoplay></video><br>
+
+    <input id="student_name" class="input-box" placeholder="Enter Student Name">
+
+    <button class="btn" onclick="captureFace()">Capture & Save</button>
+
+    <br>
+
+    <!-- 🔥 NEW BUTTON: Go to Recognition Page -->
+    <button class="btn-secondary" onclick="window.location.href='/recognize/'">
+        Go to Face Recognition →
+    </button>
+
+    <p id="status"></p>
+
+    <script>
+        // start webcam
+        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+            document.getElementById("video").srcObject = stream;
+        });
+
+        function captureFace() {
+            let name = document.getElementById("student_name").value;
+            if (!name) {
+                alert("Please enter student name");
+                return;
+            }
+
+            let video = document.getElementById("video");
+            let canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext("2d").drawImage(video, 0, 0);
+
+            let imageData = canvas.toDataURL("image/jpeg");
+
+            fetch("/capture_face/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    name: name,
+                    image: imageData 
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("status").innerText = data.message;
+            });
+        }
+    </script>
+
+</body>
+</html>

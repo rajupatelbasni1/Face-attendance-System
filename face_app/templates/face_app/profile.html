@@ -1,0 +1,297 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile</title>
+
+<style>
+*{
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body{
+    margin:0;
+    background:#f4f6f9;
+}
+
+/* Layout */
+.container{
+    display:flex;
+    min-height:100vh;
+}
+
+/* Sidebar */
+.sidebar{
+    width:240px;
+    background:#1e293b;
+    color:white;
+    padding:20px;
+}
+
+.sidebar h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    padding:12px;
+    color:white;
+    text-decoration:none;
+    margin-bottom:10px;
+    border-radius:6px;
+    transition:.3s;
+}
+
+.sidebar a:hover{
+    background:#334155;
+}
+
+/* Main */
+.main{
+    flex:1;
+    padding:30px;
+    animation:fadeIn .6s ease;
+}
+
+/* Profile Card */
+.profile-card{
+    max-width:900px;
+    background:white;
+    margin:auto;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+    padding:30px;
+    display:grid;
+    grid-template-columns:1fr 2fr;
+    gap:30px;
+    animation:slideUp .7s ease;
+}
+
+/* Left */
+.profile-left{
+    text-align:center;
+}
+
+.profile-left img{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    border:4px solid #6366f1;
+    margin-bottom:15px;
+}
+
+.profile-left h3{
+    margin:10px 0;
+}
+
+.profile-left p{
+    color:#64748b;
+}
+
+/* Right */
+.profile-right h2{
+    margin-bottom:20px;
+    color:#1e293b;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.info-box{
+    background:#f1f5f9;
+    padding:15px;
+    border-radius:10px;
+}
+
+.info-box span{
+    display:block;
+    font-size:14px;
+    color:#64748b;
+}
+
+.info-box strong{
+    font-size:16px;
+}
+
+/* Buttons */
+.btns{
+    margin-top:25px;
+    display:flex;
+    gap:15px;
+}
+
+.btn{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+    transition:.3s;
+}
+
+.edit{
+    background:#6366f1;
+    color:white;
+}
+
+.logout{
+    background:#ef4444;
+    color:white;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+/* Attendance Summary */
+.summary{
+    margin-top:30px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.summary-card{
+    padding:20px;
+    border-radius:14px;
+    color:white;
+    text-align:center;
+}
+
+.green{ background:#22c55e; }
+.blue{ background:#3b82f6; }
+.red{ background:#ef4444; }
+
+/* Responsive */
+@media(max-width:900px){
+    .profile-card{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+        display:none;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+}
+
+@keyframes slideUp{
+    from{transform:translateY(40px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🎓 Student</h2>
+        <a href="{% url 'student_dashboard' %}">🏠 Dashboard</a>
+         <a href="{% url 'student_monthly_report' %}">📊 Monthly Report</a>
+        <!-- <a href="#">📅 Attendance</a>
+        <a href="#">📊 Reports</a> -->
+        <a href="{% url 'profile' %}">⚙ Profile</a>
+        <a href="{% url 'logout' %}">🚪 Logout</a>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <div class="profile-card">
+
+            <!-- Left -->
+            <div class="profile-left">
+
+  
+{% if student.profile_picture %}
+    <img src="{{ student.profile_picture.url }}" alt="Profile">
+{% else %}
+    <img src="{% static 'face_app/images/default_profile.png' %}" alt="Profile">
+{% endif %}
+
+
+                <h3>{{ request.user.username }}</h3>
+                <p>{{ student.department.name }}</p>
+            </div>
+
+            <!-- Right -->
+            <div class="profile-right">
+                <h2>My Profile</h2>
+
+                <div class="info-grid">
+                    <div class="info-box">
+                        <span>Full Name</span>
+                        <strong>{{ student.name }}</strong>
+                    </div>
+
+                    <div class="info-box">
+                        <span>Email</span>
+                        <strong>{{ request.user.email }}</strong>
+                    </div>
+
+                    <div class="info-box">
+                        <span>Department</span>
+                        <strong>{{ student.department.name }}</strong>
+                    </div>
+
+                    <div class="info-box">
+                        <span>Joined On</span>
+                        <strong>{{ student.created_at|date:"d M Y" }}</strong>
+                    </div>
+                </div>
+
+                <div class="btns">
+                    <button class="btn edit">Edit Profile</button>
+                    <a href="{% url 'logout' %}">
+                        <button class="btn logout">Logout</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Summary -->
+        <div class="summary">
+            <div class="summary-card green">
+                <h3>Attendance %</h3>
+                <p>{{ attendance_percent }}%</p>
+            </div>
+
+            <div class="summary-card blue">
+                <h3>Present Days</h3>
+                <p>{{ present_days }}</p>
+            </div>
+
+            <div class="summary-card red">
+                <h3>Absent Days</h3>
+                <p>{{ absent_days }}</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

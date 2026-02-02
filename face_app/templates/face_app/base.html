@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{% static 'admin/css/styles.css' %}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>ADMIN</h2>
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <a href="{% url 'admin_departments' %}">Departments</a>
+    <a href="{% url 'admin_subjects' %}">Subjects</a>
+    <a href="{% url 'admin_timetable' %}">Timetable</a>
+    <a href="{% url 'admin_holidays' %}">Holidays</a>
+    <a href="{% url 'admin_attendance' %}">Attendance</a>
+</div>
+
+<div class="main">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

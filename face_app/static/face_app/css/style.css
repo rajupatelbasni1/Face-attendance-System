@@ -1,0 +1,10 @@
+body { font-family: Arial, sans-serif; background:#f5f7fb; color:#222; }
+.container { width:800px; margin:30px auto; background:white; padding:20px; border-radius:8px;
+             box-shadow:0 6px 18px rgba(0,0,0,0.08); text-align:center;}
+video { border-radius:6px; border:1px solid #ddd; width:640px; height:480px; }
+img#stream { width:640px; border-radius:6px; border:1px solid #ddd; }
+.controls { margin-top:12px; display:flex; gap:8px; justify-content:center; align-items:center;}
+input#name{ padding:8px 10px; font-size:16px; width:220px; border-radius:6px; border:1px solid #ccc;}
+button{ padding:10px 14px; background:#2b8aef; color:white; border:none; border-radius:6px; cursor:pointer;}
+a{ color:#2b8aef; text-decoration:none;}
+#msg{ margin-top:12px; color:green; font-weight:600;}

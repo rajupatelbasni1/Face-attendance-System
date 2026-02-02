@@ -1,0 +1,13 @@
+{% extends 'admin_panel/base.html' %}
+{% block content %}
+
+<h1>Admin Dashboard</h1>
+
+<div class="cards">
+    <div class="card">Students<br>{{ students }}</div>
+    <div class="card">Subjects<br>{{ subjects }}</div>
+    <div class="card">Faculty<br>{{ faculty }}</div>
+    <div class="card">Today Attendance<br>{{ attendance }}</div>
+</div>
+
+{% endblock %}

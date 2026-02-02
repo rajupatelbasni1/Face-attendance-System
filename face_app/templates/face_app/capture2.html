@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Student Face</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        #video {
+            width: 480px;
+            height: 360px;
+            border-radius: 12px;
+            border: 4px solid #22c55e;
+            background: black;
+            pointer-events: none;
+
+
+        }
+
+        select {
+            padding: 12px;
+            width: 320px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 12px 35px;
+            border: none;
+            background: #22c55e;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            color: black;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #16a34a;
+        }
+
+        .btn-secondary {
+            margin-top: 15px;
+            padding: 12px 35px;
+            border: 2px solid #22c55e;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .btn-secondary:hover {
+            background: #22c55e;
+            color: black;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📸 Register Student Face</h1>
+
+<!-- LIVE CAMERA -->
+<video id="video" autoplay></video><br>
+
+<!-- STUDENT SELECT FROM DATABASE -->
+<select id="student_id">
+    <option value="">-- Select Student --</option>
+    {% for student in students %}
+        <option value="{{ student.id }}">
+            {{ student.name }} ({{ student.user.email }})
+        </option>
+    {% endfor %}
+</select>
+
+<br>
+
+<button class="btn" onclick="captureFace()">Capture & Save Face</button>
+
+<br>
+
+<button class="btn-secondary" onclick="window.location.href='/recognize/'">
+    Go to Face Recognition →
+</button>
+
+<p id="status"></p>
+
+<script>
+const video = document.getElementById("video");
+const statusText = document.getElementById("status");
+
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+    video.srcObject = stream;
+})
+.catch(err => {
+    alert("Camera error: " + err);
+});
+
+function captureFace() {
+
+    const studentId = document.getElementById("student_id").value;
+    if (!studentId) {
+        alert("Please select student");
+        return;
+    }
+
+    if (video.videoWidth === 0) {
+        alert("Camera not ready yet");
+        return;
+    }
+
+    statusText.innerText = "⏳ Capturing face...";
+    statusText.style.color = "yellow";
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0);
+
+    const imageData = canvas.toDataURL("image/jpeg");
+
+    fetch("/capture_face/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            student_id: studentId,
+            image: imageData
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        statusText.innerText = data.message;
+        statusText.style.color = data.message.includes("✅") ? "lightgreen" : "red";
+    })
+    .catch(err => {
+        statusText.innerText = "❌ Server error";
+        statusText.style.color = "red";
+        console.error(err);
+    });
+}
+</script>
+
+
+
+</body>
+</html>
